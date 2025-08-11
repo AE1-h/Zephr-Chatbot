@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zephyr - Ancient Mehen Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for a better look */
+        #chat-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        #chat-container::-webkit-scrollbar-track {
+            background: #fde68a; /* amber-200 */
+        }
+        #chat-container::-webkit-scrollbar-thumb {
+            background-color: #d97706; /* amber-600 */
+            border-radius: 10px;
+            border: 2px solid #fde68a; /* amber-200 */
+        }
+        /* Animation for message bubbles */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message-bubble {
+            animation: slideIn 0.4s ease-out;
+        }
+        /* Typing indicator animation */
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+        .typing-dot {
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .action-btn {
+             background: rgba(255, 255, 255, 0.8);
+             border: 2px solid #fbbf24;
+             border-radius: 25px;
+             padding: 8px 16px;
+             cursor: pointer;
+             transition: all 0.3s ease;
+             font-size: 14px;
+             font-weight: 500;
+        }
+        .action-btn:hover {
+             background: #fbbf24;
+             color: white;
+             transform: translateY(-2px);
+             box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-amber-100 flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-2xl mx-4 my-8 bg-white/70 backdrop-blur-lg rounded-2xl shadow-2xl flex flex-col h-[90vh]">
+        
+        <!-- Header -->
+        <header class="p-4 border-b border-amber-200 flex items-center space-x-4">
+            <div class="w-16 h-16 rounded-full bg-amber-500 p-1 shadow-md flex-shrink-0">
+                <!-- SVG Avatar for Zephyr -->
+                <svg viewBox="0 0 100 100" class="rounded-full bg-amber-100">
+                    <path d="M50 2C23.5 2 2 23.5 2 50s21.5 48 48 48 48-21.5 48-48S76.5 2 50 2zm0 8c22.1 0 40 17.9 40 40s-17.9 40-40 40S10 72.1 10 50 27.9 10 50 10z" fill="#B45309"/>
+                    <path d="M50 12c-3.3 0-6 2.7-6 6v4c0 3.3 2.7 6 6 6s6-2.7 6-6v-4c0-3.3-2.7-6-6-6z" fill="#FBBF24"/>
+                    <path d="M68 24.2c-2.1-2.1-5.5-2.1-7.6 0L50 34.5l-10.4-10.3c-2.1-2.1-5.5-2.1-7.6 0s-2.1 5.5 0 7.6L42.4 42.1 32 52.5c-2.1 2.1-2.1 5.5 0 7.6s5.5 2.1 7.6 0L50 50.3l10.4 10.3c2.1 2.1 5.5 2.1 7.6 0s2.1-5.5 0-7.6L57.6 42.1 68 31.8c2.1-2.1 2.1-5.5 0-7.6z" fill="#F59E0B"/>
+                    <path d="M50 62c-8.8 0-16 7.2-16 16h32c0-8.8-7.2-16-16-16z" fill="#B45309"/>
+                    <path d="M38 68c-3.3 0-6 2.7-6 6s2.7 6 6 6 6-2.7 6-6-2.7-6-6-6zm24 0c-3.3 0-6 2.7-6 6s2.7 6 6 6 6-2.7 6-6-2.7-6-6-6z" fill="#FBBF24"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold text-amber-800">Zephyr</h1>
+                <p class="text-sm text-amber-600">Your Guide to Ancient Mehen</p>
+            </div>
+        </header>
+
+        <!-- Chat Area -->
+        <div id="chat-container" class="flex-1 p-4 overflow-y-auto space-y-4">
+            <!-- Messages will be appended here -->
+        </div>
+        
+        <!-- Quick Actions -->
+        <div id="quick-actions" class="p-2 border-t border-amber-200">
+            <div class="flex flex-wrap justify-center gap-2">
+                 <button class="action-btn" data-message="rules">📜 Rules</button>
+                 <button class="action-btn" data-message="setup">🎲 Setup</button>
+                 <button class="action-btn" data-message="strategy">⚔️ Strategy</button>
+                 <button class="action-btn" data-message="history">🏛️ History</button>
+                 <button class="action-btn" data-message="videos">📺 Videos</button>
+                 <button class="action-btn" data-message="buy">🛒 Buy a Set</button>
+            </div>
+        </div>
+
+        <!-- Input Form -->
+        <div id="chat-form" class="p-4 border-t border-amber-200">
+            <div class="flex items-center space-x-2">
+                <input type="text" id="message-input" placeholder="Ask me about Mehen..." class="flex-1 p-3 border-2 border-amber-300 rounded-full focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition duration-300" autocomplete="off">
+                <button type="button" onclick="sendMessage()" class="bg-amber-500 text-white rounded-full p-3 hover:bg-amber-600 transition duration-300 shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DOM Elements ---
+        const chatContainer = document.getElementById('chat-container');
+        const messageInput = document.getElementById('message-input');
+        const quickActionsContainer = document.getElementById('quick-actions');
+
+        // --- State ---
+        let userName = '';
+        let conversationState = 'GREETING'; // GREETING -> AWAITING_NAME -> CHATTING
+        let isBotTyping = false;
+
+        // --- Knowledge Base & Resources ---
+        const KNOWLEDGE_BASE = {
+            intro: "I am Zephyr, your expert guide through Mehen—the ancient Egyptian coiled-serpent board game. I can teach you rules, setup, strategy, share historical insights, and provide educational resources.",
+            rules: "<b>Mehen Rules (Reconstructed):</b><br><br>• <b>Phase 1:</b> Move your small pieces (marbles) from the serpent's tail toward the head.<br>• <b>Phase 2:</b> When a piece reaches the head, you can deploy your lion piece.<br>• <b>Phase 3:</b> Your lion chases opponent pieces back toward the tail.<br>• <b>Capture:</b> Lions can capture opponent pieces by landing on them.<br>• <b>Victory:</b> Be the last player with pieces on the board.<br><br><i>Note: Original rules are lost to time - modern versions use scholarly reconstructions.</i>",
+            setup: "<b>Mehen Board Setup:</b><br><br>• <b>Board:</b> Circular spiral track (like a coiled snake).<br>• <b>Players:</b> 2-6 players.<br>• <b>Pieces:</b> Each player gets 6 small counters + 1 lion piece.<br>• <b>Starting:</b> All pieces begin at the outer edge (serpent's tail).<br>• <b>Movement:</b> Use dice or throwing sticks.<br>• <b>Goal:</b> Navigate the spiral toward the center (serpent's head).<br><br><i>The serpent represents Mehen, protector of the sun god Ra.</i>",
+            strategy: "<b>Winning Strategies:</b><br><br>• <b>Pacing:</b> Don't rush all pieces forward - keep some back for defense.<br>• <b>Timing:</b> Deploy your lion when maximum opponents are vulnerable.<br>• <b>Control:</b> Dominate narrow sections and spiral bends.<br>• <b>Protection:</b> Shield important pieces with less valuable ones.<br>• <b>Patience:</b> Wait for optimal capture opportunities.<br><br><i>Remember: The lion is your most powerful piece - use it wisely!</i>",
+            history: "<b>Ancient Egyptian Origins:</b><br><br>• <b>Period:</b> Old Kingdom Egypt (c. 2686-2181 BCE).<br>• <b>Deity:</b> Named after Mehen, the serpent who protects Ra.<br>• <b>Players:</b> Nobility and royal families.<br>• <b>Discovery:</b> Found in tombs and archaeological sites.<br>• <b>Significance:</b> Believed to have religious and recreational purposes.<br><br><i>Examples are displayed in the British Museum and Metropolitan Museum of Art.</i>",
+            help: "I can help you with:<br>• <b>Rules</b> - How to play the game<br>• <b>Setup</b> - Preparing the board<br>• <b>Strategy</b> - Winning techniques<br>• <b>History</b> - Ancient Egyptian origins<br>• <b>Videos</b> - Visual guides and tutorials<br>• <b>Buy a Set</b> - Where to find replicas<br><br>What would you like to learn about?",
+        };
+
+        const YOUTUBE_VIDEOS = [
+            { title: "Mehen Gameplay & Rules", id: "8o1BBqDsAZ8", description: "A detailed walkthrough of how to play the ancient game of Mehen, from setup to victory." },
+            { title: "The History of Mehen", id: "rCUIv0uvV2M", description: "Uncovering the secrets and history behind the mysterious serpent game of the Pharaohs." },
+            { title: "Mehen: The Serpent Game", id: "sG0fLpZS1Hs", description: "A documentary-style look into the game's artifacts and cultural significance." }
+        ];
+
+        // --- Core Functions ---
+
+        /**
+         * Adds a message to the chat container.
+         * @param {string} text - The message content (can be HTML).
+         * @param {string} sender - 'bot' or 'user'.
+         */
+        function addMessage(text, sender) {
+            const messageWrapper = document.createElement('div');
+            messageWrapper.className = `w-full flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+            
+            const messageBubble = document.createElement('div');
+            messageBubble.className = `message-bubble max-w-md lg:max-w-lg p-3 rounded-2xl text-gray-800 ${sender === 'user' ? 'bg-amber-300 rounded-br-lg' : 'bg-gray-200 rounded-bl-lg'}`;
+            messageBubble.innerHTML = text;
+
+            messageWrapper.appendChild(messageBubble);
+            chatContainer.appendChild(messageWrapper);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        /**
+         * Shows or hides the typing indicator.
+         * @param {boolean} show - True to show, false to hide.
+         */
+        function toggleTypingIndicator(show) {
+            let indicator = document.getElementById('typing-indicator');
+            if (show && !indicator) {
+                isBotTyping = true;
+                indicator = document.createElement('div');
+                indicator.id = 'typing-indicator';
+                indicator.className = 'w-full flex justify-start';
+                indicator.innerHTML = `
+                    <div class="p-3 rounded-2xl bg-gray-200 rounded-bl-lg">
+                        <div class="flex items-center space-x-1.5">
+                            <div class="typing-dot h-2 w-2 bg-amber-500 rounded-full"></div>
+                            <div class="typing-dot h-2 w-2 bg-amber-500 rounded-full" style="animation-delay: 0.2s;"></div>
+                            <div class="typing-dot h-2 w-2 bg-amber-500 rounded-full" style="animation-delay: 0.4s;"></div>
+                        </div>
+                    </div>
+                `;
+                chatContainer.appendChild(indicator);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            } else if (!show && indicator) {
+                isBotTyping = false;
+                indicator.remove();
+            }
+        }
+        
+        /**
+         * Processes a user message and returns a bot response.
+         * @param {string} userMessage - The text from the user.
+         */
+        function getBotResponse(userMessage) {
+            const text = userMessage.toLowerCase().trim();
+            
+            // Intent classification
+            if (text.includes('rule') || text.includes('play')) return KNOWLEDGE_BASE.rules;
+            if (text.includes('setup') || text.includes('start')) return KNOWLEDGE_BASE.setup;
+            if (text.includes('strategy') || text.includes('tip') || text.includes('win')) return KNOWLEDGE_BASE.strategy;
+            if (text.includes('history') || text.includes('ancient') || text.includes('egypt')) return KNOWLEDGE_BASE.history;
+            if (text.includes('video') || text.includes('tutorial') || text.includes('watch')) {
+                let videoHTML = "Of course! Here are some fascinating videos about Mehen. Click to watch them on YouTube:<br><br>";
+                YOUTUBE_VIDEOS.forEach(video => {
+                    videoHTML += `
+                        <a href="https://www.youtube.com/watch?v=${video.id}" target="_blank" class="block p-2 my-2 bg-white rounded-lg hover:bg-amber-50 transition duration-200">
+                            <strong class="text-amber-700">${video.title}</strong>
+                            <p class="text-sm text-gray-600">${video.description}</p>
+                        </a>
+                    `;
+                });
+                return videoHTML;
+            }
+            if (text.includes('buy') || text.includes('purchase') || text.includes('shop')) {
+                return `That's a great question, ${userName}! While you can't buy an original ancient artifact, many talented artisans create beautiful modern replicas of Mehen. <br><br>You can find a wide variety of them on Etsy. Here is a link to get you started:<br><br>
+                <a href="https://www.etsy.com/market/mehen_game" target="_blank" class="block p-2 my-2 bg-white rounded-lg hover:bg-amber-50 transition duration-200">
+                    <strong class="text-amber-700">🛒 Shop for Mehen Games on Etsy</strong>
+                    <p class="text-sm text-gray-600">Find handmade boards, pieces, and full game sets.</p>
+                </a>`;
+            }
+            if (text.includes('help') || text.includes('what can you do')) return KNOWLEDGE_BASE.help;
+            
+            // Fallback response
+            return `That's an interesting thought, ${userName}! My knowledge is focused on the game of Mehen. Try asking about "rules", "history", or "videos".`;
+        }
+
+        /**
+         * Handles the entire chat interaction flow.
+         * @param {string} userMessage - The text from the user.
+         */
+        async function handleInteraction(userMessage) {
+            if (isBotTyping) return;
+
+            addMessage(userMessage, 'user');
+            toggleTypingIndicator(true);
+            
+            // Simulate bot thinking time
+            await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 500));
+
+            let botReply;
+
+            switch (conversationState) {
+                case 'AWAITING_NAME':
+                    userName = userMessage.trim().split(' ')[0]; // Take the first name
+                    userName = userName.charAt(0).toUpperCase() + userName.slice(1); // Capitalize
+                    botReply = `A pleasure to meet you, <b>${userName}</b>! I am Zephyr.<br><br>How can I guide you through the world of Mehen today? You can ask me about its rules, setup, or history.`;
+                    conversationState = 'CHATTING';
+                    quickActionsContainer.style.display = 'block'; // Show quick actions
+                    messageInput.placeholder = `Ask away, ${userName}...`;
+                    break;
+                
+                case 'CHATTING':
+                    botReply = getBotResponse(userMessage);
+                    break;
+            }
+
+            toggleTypingIndicator(false);
+            addMessage(botReply, 'bot');
+        }
+
+        // --- Event Listeners & Initializer ---
+
+        // Handle sending messages
+        function sendMessage() {
+            const messageText = messageInput.value.trim();
+            if (messageText) {
+                handleInteraction(messageText);
+                messageInput.value = '';
+            }
+        }
+
+        // Handle Enter key press
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Handle quick action buttons
+        document.querySelectorAll('.action-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const message = button.dataset.message;
+                if (conversationState === 'CHATTING') {
+                    handleInteraction(message);
+                }
+            });
+        });
+
+        // Initial greeting sequence
+        function startConversation() {
+            const currentHour = new Date().getHours();
+            let timeGreeting;
+            if (currentHour < 12) {
+                timeGreeting = "Good morning";
+            } else if (currentHour < 18) {
+                timeGreeting = "Good afternoon";
+            } else {
+                timeGreeting = "Good evening";
+            }
+
+            const initialMessage = `${timeGreeting}, traveler! Welcome to the world of Mehen.<br><br>I am Zephyr. To whom do I have the pleasure of speaking?`;
+            
+            toggleTypingIndicator(true);
+            setTimeout(() => {
+                toggleTypingIndicator(false);
+                addMessage(initialMessage, 'bot');
+                conversationState = 'AWAITING_NAME';
+                quickActionsContainer.style.display = 'none'; // Hide quick actions initially
+                messageInput.placeholder = "What is your name?";
+                messageInput.focus();
+            }, 1500);
+        }
+
+        // Let's begin!
+        window.onload = startConversation;
+
+    </script>
+</body>
+</html>
